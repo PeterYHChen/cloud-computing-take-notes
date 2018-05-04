@@ -64,18 +64,14 @@ WildRydes.map = WildRydes.map || {};
 
     function onRequestNotesSuccess(result) {
         console.log('Note response received from API: ', result);
-
-        var ul = document.createElement('ul');
-        $('#noteTitle').append(ul);
-
         result.Items.forEach(note => {
             // Create the new element
-            var li = document.createElement('li');
-            // li.className = 'dynamic-link';
-            li.innerHTML = note.Title;
-            ul.appendChild(li);
-            // let content = note.Content;
-            li.onclick = function () {
+            var a = document.createElement('a');
+            a.className = 'list-group-item';
+            a.innerHTML = note.Title;
+            a.href = "#";
+            $('#noteTitle').append(a);
+            a.onclick = function () {
                 console.log("clicked");
                 $('#noteContent').text(note.Content);
             }
