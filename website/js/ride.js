@@ -17,6 +17,12 @@ WildRydes.map = WildRydes.map || {};
     });
 
     function getNotes() {
+        $('#myEditor').markdownEditor({
+            preview: true,
+            onPreview: function (content, callback) {
+                callback(marked(content));
+            }
+        });
         $.ajax({
             method: 'GET',
             url: _config.api.invokeUrl + '/notes',
