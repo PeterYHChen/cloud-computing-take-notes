@@ -17,11 +17,9 @@ WildRydes.map = WildRydes.map || {};
     });
 
     function getNotes() {
-        $('#myEditor').markdownEditor({
-            preview: true,
-            onPreview: function (content, callback) {
-                callback(marked(content));
-            }
+        $("#noteContent").markdown({
+            autofocus: true,
+            language: 'en',
         });
         $.ajax({
             method: 'GET',
@@ -79,7 +77,7 @@ WildRydes.map = WildRydes.map || {};
             $('#noteTitle').append(a);
             a.onclick = function () {
                 console.log("clicked");
-                $('#noteContent').text(note.Content);
+                $('#noteContent').data('markdown').setContent(note.Content);
             }
         });
     }

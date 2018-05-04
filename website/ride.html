@@ -18,7 +18,11 @@
     <!-- <link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css"> -->
     <link rel="stylesheet" href="css/ride.css">
     <link rel="stylesheet" href="css/message.css">
-    <link href="css/bootstrap-markdown-editor.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap-markdown-editor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.10.0/css/bootstrap-markdown.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        crossorigin="anonymous">
 </head>
 
 <body>
@@ -82,7 +86,10 @@
             <div class='noteSection'>
                 <div id="noteTitle" class='col-xs-3 list-group'> </div>
                 <div class='col-xs-9'>
-                    <textarea name="text" id="myEditor"># Test</textarea>
+                    <form>
+                        <textarea id="noteContent" name="content" data-provide="markdown" iconlibrary="fa" rows="10"></textarea>
+                        <button type="submit" class="btn">Submit</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -121,6 +128,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
     <script src="js/bootstrap-markdown-editor.js"></script>
+    <script src="js/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/to-markdown/3.1.1/to-markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.10.0/js/bootstrap-markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.10.0/js/bootstrap-markdown.min.js"></script>
 
 </body>
 
