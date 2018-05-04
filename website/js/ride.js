@@ -15,6 +15,30 @@ WildRydes.map = WildRydes.map || {};
         alert(error);
         window.location.href = '/signin.html';
     });
+
+    function getNotes() {
+        $.ajax({
+            method: 'GET',
+            url: _config.api.invokeUrl + '/notes',
+            headers: {
+                Authorization: authToken
+            },
+            // data: JSON.stringify({
+            //     PickupLocation: {
+            //         Latitude: pickupLocation.latitude,
+            //         Longitude: pickupLocation.longitude
+            //     }
+            // }),
+            contentType: 'application/json',
+            success: onRequestNotesSuccess,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error requesting ride: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                alert('An error occured when requesting your unicorn:\n' + jqXHR.responseText);
+            }
+        });
+    }
+
     function requestUnicorn(pickupLocation) {
         $.ajax({
             method: 'POST',
@@ -38,6 +62,11 @@ WildRydes.map = WildRydes.map || {};
         });
     }
 
+    function onRequestNotesSuccess(result) {
+        console.log('Note response received from API: ', result);
+        $('#result').text(result);
+    }
+
     function completeRequest(result) {
         var unicorn;
         var pronoun;
@@ -56,7 +85,7 @@ WildRydes.map = WildRydes.map || {};
     // Register click handler for #request button
     $(function onDocReady() {
         $('#request').click(handleRequestClick);
-        $('#signOut').click(function() {
+        $('#signOut').click(function () {
             WildRydes.signOut();
             alert("You have been signed out.");
             window.location = "signin.html";
@@ -85,6 +114,7 @@ WildRydes.map = WildRydes.map || {};
         var pickupLocation = WildRydes.map.selectedPoint;
         event.preventDefault();
         requestUnicorn(pickupLocation);
+        getNotes();
     }
 
     function animateArrival(callback) {
