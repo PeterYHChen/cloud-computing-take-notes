@@ -55,3 +55,19 @@ html, body, #main, #map {
     word-wrap: break-word;
     width: 100%;
 }
+
+.noteSection{
+    width:1000px;
+    margin:0 auto;
+    background:rgb(122, 120, 121);
+}
+
+.noteTitle{
+    position:absolute;
+}
+
+.noteContent{
+    background:rgb(196, 197, 248);
+    height:100px;
+    margin-left:200px;
+}

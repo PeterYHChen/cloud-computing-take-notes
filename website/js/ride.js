@@ -64,7 +64,22 @@ WildRydes.map = WildRydes.map || {};
 
     function onRequestNotesSuccess(result) {
         console.log('Note response received from API: ', result);
-        $('#result').text(result);
+
+        var ul = document.createElement('ul');
+        $('#noteTitle').append(ul);
+
+        result.Items.forEach(note => {
+            // Create the new element
+            var li = document.createElement('li');
+            // li.className = 'dynamic-link';
+            li.innerHTML = note.Title;
+            ul.appendChild(li);
+            // let content = note.Content;
+            li.onclick = function () {
+                console.log("clicked");
+                $('#noteContent').text(note.Content);
+            }
+        });
     }
 
     function completeRequest(result) {
@@ -84,6 +99,7 @@ WildRydes.map = WildRydes.map || {};
 
     // Register click handler for #request button
     $(function onDocReady() {
+        getNotes();
         $('#request').click(handleRequestClick);
         $('#signOut').click(function () {
             WildRydes.signOut();
@@ -114,7 +130,6 @@ WildRydes.map = WildRydes.map || {};
         var pickupLocation = WildRydes.map.selectedPoint;
         event.preventDefault();
         requestUnicorn(pickupLocation);
-        getNotes();
     }
 
     function animateArrival(callback) {
