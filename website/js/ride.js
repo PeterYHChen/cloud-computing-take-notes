@@ -5,7 +5,7 @@ WildRydes.map = WildRydes.map || {};
 
 (function rideScopeWrapper($) {
     $("#noteContent").hide();
-    $("#noteContentHtml").show();
+    $("#noteContentHtml").hide();
     $("#noteContentHtml").click(function () {
         $("#noteContent").show();
         $("#noteContentHtml").hide();
@@ -73,19 +73,23 @@ WildRydes.map = WildRydes.map || {};
         console.log('Note response received from API: ', result);
         result.Items.forEach(note => {
             // Create the new element
-            var a = document.createElement('a');
-            a.className = 'list-group-item';
-            a.innerHTML = note.Title;
-            a.href = "#";
-            $('#noteTitle').append(a);
-            a.onclick = function () {
-                console.log("clicked");
-                $('#noteEditor').data('markdown').setContent(note.Content);
-                $("#noteContentHtml").html($('#noteEditor').data('markdown').parseContent());
-                $("#noteContentHtml").show();
-                $("#noteContent").hide();
-            }
+            $('#noteTitle').append(createNoteElementInList(note));
         });
+    }
+
+    function createNoteElementInList(note) {
+        var a = document.createElement('a');
+        a.className = 'list-group-item';
+        a.innerHTML = note.Title;
+        a.href = "#";
+        a.onclick = function () {
+            console.log("clicked " + note.Title);
+            $('#noteEditor').data('markdown').setContent(note.Content);
+            $("#noteContentHtml").html($('#noteEditor').data('markdown').parseContent());
+            $("#noteContentHtml").show();
+            $("#noteContent").hide();
+        };
+        return a;
     }
 
     function completeRequest(result) {
@@ -105,6 +109,9 @@ WildRydes.map = WildRydes.map || {};
 
     // Register click handler for #request button
     $(function onDocReady() {
+        $('#noteContentHtml').css('background', 'rgb(255,255,255)');
+        $('#noteContentHtml').css('min-height', '100px');
+        $('#noteContentHtml').css('height', 'auto');
         $('#noteEditor').height('600');
         $("#noteEditor").markdown({
             resize: 'vertical',
@@ -118,12 +125,6 @@ WildRydes.map = WildRydes.map || {};
             onPreview: function (e) {
                 console.log("Preview!");
                 return e.parseContent();
-            },
-            onSave: function (e) {
-                $("#noteContent").hide();
-                console.log("Saving '" + e.getContent() + "'...");
-                $("#noteContentHtml").html(e.parseContent());
-                $("#noteContentHtml").show();
             },
             onChange: function (e) {
                 console.log("Changed!");
@@ -143,7 +144,10 @@ WildRydes.map = WildRydes.map || {};
                         btnText: "Save",
                         btnClass: 'btn btn-success btn-sm',
                         callback: function (e) {
-                            console.log("Save!");
+                            $("#noteContent").hide();
+                            console.log("Saving '" + e.getContent() + "'...");
+                            $("#noteContentHtml").html(e.parseContent());
+                            $("#noteContentHtml").show();
                         }
                     }]
                 }, {
@@ -171,7 +175,11 @@ WildRydes.map = WildRydes.map || {};
                 }]
             ]
         });
-
+        $('#createNoteButton').click(function () {
+            var note = {};
+            note.Title = "test";
+            $('#noteTitle').prepend(createNoteElementInList(note));
+        });
         getNotes();
         $('#request').click(handleRequestClick);
         $('#signOut').click(function () {
