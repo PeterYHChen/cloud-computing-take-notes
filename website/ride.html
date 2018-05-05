@@ -83,11 +83,17 @@
         <div class="container">
             <h2 align="center">Notes-Taking App</h2>
             <div class='noteSection'>
-                <div id="noteTitle" class='col-xs-3 list-group'> </div>
+                <div class='col-xs-3'>
+                    <h4 align="center">Notes</h4>
+                    <div id="noteTitle" class='list-group'> </div>
+                </div>
                 <div class='col-xs-9'>
                     <form>
-                        <textarea id="noteContent" name="content" data-provide="markdown" iconlibrary="fa" rows="10"></textarea>
-                        <button type="submit" class="btn">Submit</button>
+                        <h4 align="center">Content</h4>
+                        <div id="noteContent">
+                            <textarea id="noteEditor"></textarea>
+                        </div>
+                        <div id="noteContentHtml"></div>
                     </form>
                 </div>
             </div>

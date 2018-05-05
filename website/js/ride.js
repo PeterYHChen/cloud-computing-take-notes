@@ -4,6 +4,13 @@ var WildRydes = window.WildRydes || {};
 WildRydes.map = WildRydes.map || {};
 
 (function rideScopeWrapper($) {
+    $("#noteContent").hide();
+    $("#noteContentHtml").show();
+    $("#noteContentHtml").click(function () {
+        $("#noteContent").show();
+        $("#noteContentHtml").hide();
+    });
+
     var authToken;
     WildRydes.authToken.then(function setAuthToken(token) {
         if (token) {
@@ -17,10 +24,6 @@ WildRydes.map = WildRydes.map || {};
     });
 
     function getNotes() {
-        $("#noteContent").markdown({
-            autofocus: true,
-            language: 'en',
-        });
         $.ajax({
             method: 'GET',
             url: _config.api.invokeUrl + '/notes',
@@ -77,7 +80,10 @@ WildRydes.map = WildRydes.map || {};
             $('#noteTitle').append(a);
             a.onclick = function () {
                 console.log("clicked");
-                $('#noteContent').data('markdown').setContent(note.Content);
+                $('#noteEditor').data('markdown').setContent(note.Content);
+                $("#noteContentHtml").html($('#noteEditor').data('markdown').parseContent());
+                $("#noteContentHtml").show();
+                $("#noteContent").hide();
             }
         });
     }
@@ -99,6 +105,37 @@ WildRydes.map = WildRydes.map || {};
 
     // Register click handler for #request button
     $(function onDocReady() {
+        $("#noteEditor").markdown({
+            savable: true,
+            resize: 'vertical',
+            // onShow: function (e) {
+            //     alert("Showing "
+            //         + e.$textarea.prop("tagName").toLowerCase()
+            //         + "#"
+            //         + e.$textarea.attr("id")
+            //         + " as Markdown Editor...")
+            // },
+            onPreview: function (e) {
+                console.log("Preview!")
+                return e.parseContent()
+            },
+            onSave: function (e) {
+                $("#noteContent").hide();
+                console.log("Saving '" + e.getContent() + "'...")
+                $("#noteContentHtml").html(e.parseContent());
+                $("#noteContentHtml").show();
+            },
+            onChange: function (e) {
+                console.log("Changed!")
+            },
+            onFocus: function (e) {
+                console.log("Focus triggered!")
+            },
+            onBlur: function (e) {
+                console.log("Blur triggered!")
+            }
+        });
+
         getNotes();
         $('#request').click(handleRequestClick);
         $('#signOut').click(function () {
