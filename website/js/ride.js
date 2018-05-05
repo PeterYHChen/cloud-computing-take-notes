@@ -23,6 +23,14 @@ WildRydes.map = WildRydes.map || {};
         window.location.href = '/signin.html';
     });
 
+    var selectedNote;
+    function updateSelectedNoteToUI() {
+        selectedNote.a.innerHTML = selectedNote.Title;
+        $('#noteTitle').val(selectedNote.Title);
+        $('#noteEditor').data('markdown').setContent(selectedNote.Content);
+        $("#noteContentHtml").html($('#noteEditor').data('markdown').parseContent());
+    }
+
     function getNotes() {
         $.ajax({
             method: 'GET',
@@ -73,7 +81,7 @@ WildRydes.map = WildRydes.map || {};
         console.log('Note response received from API: ', result);
         result.Items.forEach(note => {
             // Create the new element
-            $('#noteTitle').append(createNoteElementInList(note));
+            $('#noteTitleList').append(createNoteElementInList(note));
         });
     }
 
@@ -83,9 +91,11 @@ WildRydes.map = WildRydes.map || {};
         a.innerHTML = note.Title;
         a.href = "#";
         a.onclick = function () {
+            selectedNote = note;
+            selectedNote.a = a;
             console.log("clicked " + note.Title);
-            $('#noteEditor').data('markdown').setContent(note.Content);
-            $("#noteContentHtml").html($('#noteEditor').data('markdown').parseContent());
+            console.log(selectedNote);
+            updateSelectedNoteToUI();
             $("#noteContentHtml").show();
             $("#noteContent").hide();
         };
@@ -144,9 +154,11 @@ WildRydes.map = WildRydes.map || {};
                         btnText: "Save",
                         btnClass: 'btn btn-success btn-sm',
                         callback: function (e) {
+                            selectedNote.Title = $('#noteTitle').val();
+                            selectedNote.Content = e.getContent();
+                            updateSelectedNoteToUI();
                             $("#noteContent").hide();
                             console.log("Saving '" + e.getContent() + "'...");
-                            $("#noteContentHtml").html(e.parseContent());
                             $("#noteContentHtml").show();
                         }
                     }]
@@ -177,8 +189,7 @@ WildRydes.map = WildRydes.map || {};
         });
         $('#createNoteButton').click(function () {
             var note = {};
-            note.Title = "test";
-            $('#noteTitle').prepend(createNoteElementInList(note));
+            $('#noteTitleList').prepend(createNoteElementInList(note));
         });
         getNotes();
         $('#request').click(handleRequestClick);
