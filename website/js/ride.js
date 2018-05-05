@@ -107,7 +107,6 @@ WildRydes.map = WildRydes.map || {};
     $(function onDocReady() {
         $('#noteEditor').height('600');
         $("#noteEditor").markdown({
-            savable: true,
             resize: 'vertical',
             // onShow: function (e) {
             //     alert("Showing "
@@ -117,24 +116,60 @@ WildRydes.map = WildRydes.map || {};
             //         + " as Markdown Editor...")
             // },
             onPreview: function (e) {
-                console.log("Preview!")
-                return e.parseContent()
+                console.log("Preview!");
+                return e.parseContent();
             },
             onSave: function (e) {
                 $("#noteContent").hide();
-                console.log("Saving '" + e.getContent() + "'...")
+                console.log("Saving '" + e.getContent() + "'...");
                 $("#noteContentHtml").html(e.parseContent());
                 $("#noteContentHtml").show();
             },
             onChange: function (e) {
-                console.log("Changed!")
+                console.log("Changed!");
             },
             onFocus: function (e) {
-                console.log("Focus triggered!")
+                console.log("Focus triggered!");
             },
             onBlur: function (e) {
-                console.log("Blur triggered!")
-            }
+                console.log("Blur triggered!");
+            },
+            additionalButtons: [
+                [{
+                    name: "groupSave",
+                    data: [{
+                        name: "cmdSave",
+                        title: "Save",
+                        btnText: "Save",
+                        btnClass: 'btn btn-success btn-sm',
+                        callback: function (e) {
+                            console.log("Save!");
+                        }
+                    }]
+                }, {
+                    name: "groupCancel",
+                    data: [{
+                        name: "cmdCancel",
+                        title: "Cancel",
+                        btnText: "Cancel",
+                        btnClass: 'btn btn-warning btn-sm',
+                        callback: function (e) {
+                            console.log("Cancel!");
+                        }
+                    }]
+                }, {
+                    name: "groupDelete",
+                    data: [{
+                        name: "cmdDelete",
+                        title: "Delete",
+                        btnText: "Delete",
+                        btnClass: 'btn btn-danger btn-sm',
+                        callback: function (e) {
+                            console.log("Delete!");
+                        }
+                    }]
+                }]
+            ]
         });
 
         getNotes();
