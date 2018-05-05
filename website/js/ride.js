@@ -38,12 +38,6 @@ WildRydes.map = WildRydes.map || {};
             headers: {
                 Authorization: authToken
             },
-            // data: JSON.stringify({
-            //     PickupLocation: {
-            //         Latitude: pickupLocation.latitude,
-            //         Longitude: pickupLocation.longitude
-            //     }
-            // }),
             contentType: 'application/json',
             success: onRequestNotesSuccess,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
@@ -52,6 +46,43 @@ WildRydes.map = WildRydes.map || {};
                 alert('An error occured when requesting your notes:\n' + jqXHR.responseText);
             }
         });
+    }
+
+    function onRequestNotesSuccess(result) {
+        console.log('Get all note response received from API: ', result);
+        result.Items.forEach(note => {
+            // Create the new element
+            $('#noteTitleList').append(createNoteElementInList(note));
+        });
+    }
+
+    function createNote(selectedNote) {
+        $.ajax({
+            method: 'POST',
+            url: _config.api.invokeUrl + '/notes',
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify({
+                Note: {
+                    Title: selectedNote.Title,
+                    Content: selectedNote.Content
+                }
+            }),
+            contentType: 'application/json',
+            success: onCreateNoteSuccess,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error requesting note: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                alert('An error occured when requesting your notes:\n' + jqXHR.responseText);
+            }
+        });
+    }
+
+    function onCreateNoteSuccess(note) {
+        console.log('Create note response received from API: ', note);
+        Object.assign(selectedNote, note);
+        updateSelectedNoteToUI();
     }
 
     function requestUnicorn(pickupLocation) {
@@ -74,14 +105,6 @@ WildRydes.map = WildRydes.map || {};
                 console.error('Response: ', jqXHR.responseText);
                 alert('An error occured when requesting your unicorn:\n' + jqXHR.responseText);
             }
-        });
-    }
-
-    function onRequestNotesSuccess(result) {
-        console.log('Note response received from API: ', result);
-        result.Items.forEach(note => {
-            // Create the new element
-            $('#noteTitleList').append(createNoteElementInList(note));
         });
     }
 
@@ -157,9 +180,10 @@ WildRydes.map = WildRydes.map || {};
                             selectedNote.Title = $('#noteTitle').val();
                             selectedNote.Content = e.getContent();
                             updateSelectedNoteToUI();
-                            $("#noteContent").hide();
-                            console.log("Saving '" + e.getContent() + "'...");
-                            $("#noteContentHtml").show();
+                            createNote(selectedNote);
+                            // $("#noteContent").hide();
+                            // console.log("Saving '" + e.getContent() + "'...");
+                            // $("#noteContentHtml").show();
                         }
                     }]
                 }, {
