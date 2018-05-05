@@ -47,9 +47,9 @@ WildRydes.map = WildRydes.map || {};
             contentType: 'application/json',
             success: onRequestNotesSuccess,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
-                console.error('Error requesting ride: ', textStatus, ', Details: ', errorThrown);
+                console.error('Error requesting note: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
-                alert('An error occured when requesting your unicorn:\n' + jqXHR.responseText);
+                alert('An error occured when requesting your notes:\n' + jqXHR.responseText);
             }
         });
     }
@@ -91,7 +91,7 @@ WildRydes.map = WildRydes.map || {};
         a.innerHTML = note.Title;
         a.href = "#";
         a.onclick = function () {
-            selectedNote = note;
+            selectedNote = note; // Reference
             selectedNote.a = a;
             console.log("clicked " + note.Title);
             console.log(selectedNote);
