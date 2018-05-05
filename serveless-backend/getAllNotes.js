@@ -47,7 +47,7 @@ exports.handler = (event, context, callback) => {
 function getAllNotes(username) {
     return ddb.query({
         TableName: 'Notes',
-        ProjectionExpression: "Username, Title, Content",
+        // ProjectionExpression: "Username, Title, Content", // Return all data instead of sume cols
         KeyConditionExpression: "Username = :uname",
         // ExpressionAttributeNames: {
         //     "#uname": "username"
