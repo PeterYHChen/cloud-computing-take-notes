@@ -105,6 +105,7 @@ WildRydes.map = WildRydes.map || {};
 
     // Register click handler for #request button
     $(function onDocReady() {
+        $('#noteEditor').height('600');
         $("#noteEditor").markdown({
             savable: true,
             resize: 'vertical',
