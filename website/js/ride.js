@@ -85,6 +85,37 @@ WildRydes.map = WildRydes.map || {};
         updateSelectedNoteToUI();
     }
 
+    function updateNote(selectedNote) {
+        console.log("Update Item:", selectedNote);
+        $.ajax({
+            method: 'PUT',
+            url: _config.api.invokeUrl + '/notes',
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify({
+                Note: {
+                    NoteId: selectedNote.NoteId,
+                    Title: selectedNote.Title,
+                    Content: selectedNote.Content
+                }
+            }),
+            contentType: 'application/json',
+            success: onUpdateNoteSuccess,
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error requesting note: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                alert('An error occured when requesting your notes:\n' + jqXHR.responseText);
+            }
+        });
+    }
+
+    function onUpdateNoteSuccess(note) {
+        console.log('Update note response received from API: ', note);
+        Object.assign(selectedNote, note);
+        updateSelectedNoteToUI();
+    }
+
     function requestUnicorn(pickupLocation) {
         $.ajax({
             method: 'POST',
@@ -180,7 +211,13 @@ WildRydes.map = WildRydes.map || {};
                             selectedNote.Title = $('#noteTitle').val();
                             selectedNote.Content = e.getContent();
                             updateSelectedNoteToUI();
-                            createNote(selectedNote);
+
+                            // If noteId is provided, do update, else do create
+                            if (selectedNote.NoteId) {
+                                updateNote(selectedNote);
+                            } else {
+                                createNote(selectedNote);
+                            }
                             // $("#noteContent").hide();
                             // console.log("Saving '" + e.getContent() + "'...");
                             // $("#noteContentHtml").show();
