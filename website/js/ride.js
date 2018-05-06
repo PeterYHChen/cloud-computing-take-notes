@@ -201,6 +201,7 @@ WildRydes.map = WildRydes.map || {};
 
     // Register click handler for #request button
     $(function onDocReady() {
+        toastr.options.positionClass = "toast-bottom-center";
         $('#noteContentHtml').css('background', 'rgb(255,255,255)');
         $('#noteContentHtml').css('min-height', '100px');
         $('#noteContentHtml').css('height', 'auto');
