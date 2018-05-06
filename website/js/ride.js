@@ -17,7 +17,7 @@ WildRydes.map = WildRydes.map || {};
     });
 
     var selectedNote;
-    function updateSelectedNoteToUI() {
+    function updateSelectedNoteToUI(selectedNote) {
         selectedNote.a.innerHTML = selectedNote.Title;
         $('#noteTitle').val(selectedNote.Title);
         $('#noteEditor').data('markdown').setContent(selectedNote.Content);
@@ -63,7 +63,7 @@ WildRydes.map = WildRydes.map || {};
                 }
             }),
             contentType: 'application/json',
-            success: onCreateNoteSuccess,
+            success: onSaveNoteSuccess,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting note: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
@@ -72,10 +72,12 @@ WildRydes.map = WildRydes.map || {};
         });
     }
 
-    function onCreateNoteSuccess(note) {
-        console.log('Create note response received from API: ', note);
+    function onSaveNoteSuccess(note) {
+        toastr.success(note.Title, "Successfully save note to your library");
+        console.log('Save note response received from API: ', note);
         Object.assign(selectedNote, note);
-        updateSelectedNoteToUI();
+        selectedNote.isEdited = false;
+        updateSelectedNoteToUI(selectedNote);
     }
 
     function updateNote(selectedNote) {
@@ -94,19 +96,13 @@ WildRydes.map = WildRydes.map || {};
                 }
             }),
             contentType: 'application/json',
-            success: onUpdateNoteSuccess,
+            success: onSaveNoteSuccess,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error updating note: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
                 alert('An error occured when updating your notes:\n' + jqXHR.responseText);
             }
         });
-    }
-
-    function onUpdateNoteSuccess(note) {
-        console.log('Update note response received from API: ', note);
-        Object.assign(selectedNote, note);
-        updateSelectedNoteToUI();
     }
 
     function showDeleteModal(selectedNode) {
@@ -134,6 +130,7 @@ WildRydes.map = WildRydes.map || {};
             }),
             contentType: 'application/json',
             success: function () {
+                toastr.success(selectedNote.Title, "Successfully delete note from your library");
                 selectedNote.a.remove();
                 $("#noteContent").hide();
                 $("#noteContentHtml").hide();
@@ -174,12 +171,13 @@ WildRydes.map = WildRydes.map || {};
         a.className = 'list-group-item';
         a.innerHTML = note.Title;
         a.href = "#";
+        note.a = a;
+        note.isEdited = false;
         a.onclick = function () {
             selectedNote = note; // Reference
-            selectedNote.a = a;
             console.log("clicked " + note.Title);
             console.log(selectedNote);
-            updateSelectedNoteToUI();
+            updateSelectedNoteToUI(selectedNote);
             $("#noteContentHtml").show();
             $("#noteContent").hide();
         };
@@ -240,11 +238,11 @@ WildRydes.map = WildRydes.map || {};
                         name: "cmdSave",
                         title: "Save",
                         btnText: "Save",
-                        btnClass: 'btn btn-success btn-sm',
+                        btnClass: "btn btn-success btn-sm",
                         callback: function (e) {
-                            selectedNote.Title = $('#noteTitle').val();
+                            selectedNote.Title = $("#noteTitle").val();
                             selectedNote.Content = e.getContent();
-                            updateSelectedNoteToUI();
+                            updateSelectedNoteToUI(selectedNote);
 
                             // If noteId is provided, do update, else do create
                             if (selectedNote.NoteId) {
@@ -255,23 +253,12 @@ WildRydes.map = WildRydes.map || {};
                         }
                     }]
                 }, {
-                    name: "groupCancel",
-                    data: [{
-                        name: "cmdCancel",
-                        title: "Cancel",
-                        btnText: "Cancel",
-                        btnClass: 'btn btn-warning btn-sm',
-                        callback: function (e) {
-                            console.log("Cancel!");
-                        }
-                    }]
-                }, {
                     name: "groupDelete",
                     data: [{
                         name: "cmdDelete",
                         title: "Delete",
                         btnText: "Delete",
-                        btnClass: 'btn btn-danger btn-sm',
+                        btnClass: "btn btn-danger btn-sm",
                         callback: function (e) {
                             console.log("Delete!");
                             showDeleteModal(selectedNote);
