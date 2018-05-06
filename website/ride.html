@@ -95,16 +95,35 @@
                     <h4 align="center">Content</h4>
                     <br/>
                     <form>
-                        <div id="noteContent">
+                        <div id="noteContent" style="display:none;">
                             <input id="noteTitle" name="title" type="text" class="form-control" placeholder="Title" />
                             <textarea id="noteEditor"></textarea>
                         </div>
-                        <div id="noteContentHtml" class="well"></div>
+                        <div id="noteContentHtml" class="well" style="display:none;"></div>
                     </form>
                 </div>
             </div>
         </div>
 
+    </div>
+
+    <div class="modal fade" id="deleteNoteModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Confirm Deletion</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button id="deleteNoteModalDeleteButton" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="authTokenModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="authToken">

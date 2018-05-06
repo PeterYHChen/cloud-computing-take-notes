@@ -4,13 +4,6 @@ var WildRydes = window.WildRydes || {};
 WildRydes.map = WildRydes.map || {};
 
 (function rideScopeWrapper($) {
-    $("#noteContent").hide();
-    $("#noteContentHtml").hide();
-    $("#noteContentHtml").click(function () {
-        $("#noteContent").show();
-        $("#noteContentHtml").hide();
-    });
-
     var authToken;
     WildRydes.authToken.then(function setAuthToken(token) {
         if (token) {
@@ -103,9 +96,9 @@ WildRydes.map = WildRydes.map || {};
             contentType: 'application/json',
             success: onUpdateNoteSuccess,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
-                console.error('Error requesting note: ', textStatus, ', Details: ', errorThrown);
+                console.error('Error updating note: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
-                alert('An error occured when requesting your notes:\n' + jqXHR.responseText);
+                alert('An error occured when updating your notes:\n' + jqXHR.responseText);
             }
         });
     }
@@ -114,6 +107,43 @@ WildRydes.map = WildRydes.map || {};
         console.log('Update note response received from API: ', note);
         Object.assign(selectedNote, note);
         updateSelectedNoteToUI();
+    }
+
+    function showDeleteModal(selectedNode) {
+        $('#deleteNoteModal').on('show.bs.modal', function (event) {
+            $(this).find('.modal-body').text('Are you sure to delete "' + selectedNode.Title + '"?');
+        });
+        $('#deleteNoteModalDeleteButton').click(function () {
+            deleteNote(selectedNode);
+        });
+        $('#deleteNoteModal').modal();
+    }
+
+    function deleteNote(selectedNote) {
+        console.log("Ready to delete note: ", selectedNote);
+        $.ajax({
+            method: 'DELETE',
+            url: _config.api.invokeUrl + '/notes',
+            headers: {
+                Authorization: authToken
+            },
+            data: JSON.stringify({
+                Note: {
+                    NoteId: selectedNote.NoteId
+                }
+            }),
+            contentType: 'application/json',
+            success: function () {
+                selectedNote.a.remove();
+                $("#noteContent").hide();
+                $("#noteContentHtml").hide();
+            },
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error deleting note: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                alert('An error occured when deleting your note:\n' + jqXHR.responseText);
+            }
+        });
     }
 
     function requestUnicorn(pickupLocation) {
@@ -176,6 +206,10 @@ WildRydes.map = WildRydes.map || {};
         $('#noteContentHtml').css('background', 'rgb(255,255,255)');
         $('#noteContentHtml').css('min-height', '100px');
         $('#noteContentHtml').css('height', 'auto');
+        $("#noteContentHtml").click(function () {
+            $("#noteContent").show();
+            $("#noteContentHtml").hide();
+        });
         $('#noteEditor').height('600');
         $("#noteEditor").markdown({
             resize: 'vertical',
@@ -218,9 +252,6 @@ WildRydes.map = WildRydes.map || {};
                             } else {
                                 createNote(selectedNote);
                             }
-                            // $("#noteContent").hide();
-                            // console.log("Saving '" + e.getContent() + "'...");
-                            // $("#noteContentHtml").show();
                         }
                     }]
                 }, {
@@ -243,6 +274,7 @@ WildRydes.map = WildRydes.map || {};
                         btnClass: 'btn btn-danger btn-sm',
                         callback: function (e) {
                             console.log("Delete!");
+                            showDeleteModal(selectedNote);
                         }
                     }]
                 }]
