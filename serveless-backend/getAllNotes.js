@@ -19,7 +19,13 @@ exports.handler = (event, context, callback) => {
     // header first and use a different parsing strategy based on that value.
     const requestBody = JSON.parse(event.body);
 
-    getAllNotes(username).then((result) => {
+    // By default set to false to request all notes from the same user
+    if (!event["queryStringParameters"].hasOwnProperty('RequestPublicNotesOnly')) {
+        event["queryStringParameters"]["RequestPublicNotesOnly"] = false;
+    }
+    const requestPublicNotesOnly = event["queryStringParameters"]["RequestPublicNotesOnly"];
+
+    getAllNotes(username, requestPublicNotesOnly).then((result) => {
         // You can use the callback function to provide a return value from your Node.js
         // Lambda functions. The first parameter is used for failed invocations. The
         // second parameter specifies the result data of the invocation.
@@ -44,18 +50,32 @@ exports.handler = (event, context, callback) => {
     });
 };
 
-function getAllNotes(username) {
-    return ddb.query({
-        TableName: 'Notes',
-        // ProjectionExpression: "Username, Title, Content", // Return all data instead of sume cols
-        KeyConditionExpression: "Username = :uname",
-        // ExpressionAttributeNames: {
-        //     "#uname": "username"
-        // },
-        ExpressionAttributeValues: {
-            ":uname": username
-        }
-    }).promise();
+function getAllNotes(username, requestPublicNotesOnly) {
+    if (requestPublicNotesOnly === "true") {
+        return ddb.scan({
+            TableName: 'Notes',
+            // ProjectionExpression: "Username, Title, Content", // Return all data instead of sume cols
+            FilterExpression: "isPublic = :ispublic",
+            // ExpressionAttributeNames: {
+            //     "#uname": "username"
+            // },
+            ExpressionAttributeValues: {
+                ":ispublic": true
+            }
+        }).promise();
+    } else {
+        return ddb.query({
+            TableName: 'Notes',
+            // ProjectionExpression: "Username, Title, Content", // Return all data instead of sume cols
+            KeyConditionExpression: "Username = :uname",
+            // ExpressionAttributeNames: {
+            //     "#uname": "username"
+            // },
+            ExpressionAttributeValues: {
+                ":uname": username
+            }
+        }).promise();
+    }
 }
 
 function errorResponse(errorMessage, awsRequestId, callback) {

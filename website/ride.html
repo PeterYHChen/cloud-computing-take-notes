@@ -107,7 +107,7 @@
                                         <span class="input-group-addon">Title</span>
                                         <input id="noteTitle" name="title" type="text" class="form-control" />
                                         <span class="input-group-btn">
-                                            <button id="notePrivateStatus" class="btn btn-danger" type="button">Go!</button>
+                                            <button id="notePrivateStatus" class="btn btn-danger" type="button"></button>
                                         </span>
                                     </div>
                                     <textarea id="noteEditor"></textarea>
@@ -129,11 +129,15 @@
                             <br/>
                             <form>
                                 <div id="publicNoteContent" style="display:none;">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">Title</span>
-                                        <input id="publicNoteTitle" name="title" type="text" class="form-control" />
-                                    </div>
                                     <textarea id="publicNoteEditor"></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Title</span>
+                                    <input id="publicNoteTitle" type="text" class="form-control" readonly/>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">User</span>
+                                    <input id="publicNoteUser" type="text" class="form-control" readonly/>
                                 </div>
                                 <div id="publicNoteContentHtml" class="well" style="display:none;"></div>
                             </form>

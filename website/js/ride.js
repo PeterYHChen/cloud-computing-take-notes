@@ -9,7 +9,13 @@ WildRydes.map = WildRydes.map || {};
         // console.log("token", token);
         if (token) {
             authToken = token;
-            getNotes();
+            getNotes(false, function (result) {
+                console.log('Get all note response received from API: ', result);
+                result.Items.forEach(note => {
+                    // Create the new element
+                    $('#noteTitleList').append(createNoteElementInList(note));
+                });
+            });
         } else {
             window.location.href = '/signin.html';
         }
@@ -34,28 +40,20 @@ WildRydes.map = WildRydes.map || {};
         }
     }
 
-    function getNotes() {
+    function getNotes(requestPublicNotesOnly, successCallback) {
         $.ajax({
             method: 'GET',
-            url: _config.api.invokeUrl + '/notes',
+            url: _config.api.invokeUrl + '/notes?' + "RequestPublicNotesOnly=" + requestPublicNotesOnly,
             headers: {
                 Authorization: authToken
             },
             contentType: 'application/json',
-            success: onRequestNotesSuccess,
+            success: successCallback,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting note: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
                 alert('An error occured when requesting your notes:\n' + jqXHR.responseText);
             }
-        });
-    }
-
-    function onRequestNotesSuccess(result) {
-        console.log('Get all note response received from API: ', result);
-        result.Items.forEach(note => {
-            // Create the new element
-            $('#noteTitleList').append(createNoteElementInList(note));
         });
     }
 
@@ -214,6 +212,39 @@ WildRydes.map = WildRydes.map || {};
     // Register click handler for #request button
     $(function onDocReady() {
         toastr.options.positionClass = "toast-bottom-center";
+
+        $('#publicNoteContentHtml').css('background', 'rgb(255,255,255)');
+        $('#publicNoteContentHtml').css('min-height', '100px');
+        $('#publicNoteContentHtml').css('height', 'auto');
+        $("#publicNoteEditor").markdown();
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var target = $(e.target).attr("href") // activated tab
+            if ((target == '#publicNotes')) {
+                console.log(target + " is clicked.");
+                $('#publicNoteTitleList').empty();
+                getNotes(true, function (result) {
+                    console.log('Get all note response received from API: ', result);
+                    result.Items.forEach(note => {
+                        // Create the new element
+                        var a = document.createElement('a');
+                        a.className = 'list-group-item';
+                        a.innerHTML = note.Title;
+                        a.href = "#";
+                        note.a = a;
+                        note.isEdited = false;
+                        a.onclick = function () {
+                            $('#publicNoteTitle').val(note.Title);
+                            $('#publicNoteUser').val(note.Username);
+                            $('#publicNoteEditor').data('markdown').setContent(note.Content);
+                            $("#publicNoteContentHtml").html($('#publicNoteEditor').data('markdown').parseContent());
+                            $("#publicNoteContentHtml").show();
+                        };
+                        $('#publicNoteTitleList').append(a);
+                    });
+                });
+            }
+        });
+
         $('#noteContentHtml').css('background', 'rgb(255,255,255)');
         $('#noteContentHtml').css('min-height', '100px');
         $('#noteContentHtml').css('height', 'auto');
