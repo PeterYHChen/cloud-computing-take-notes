@@ -26,6 +26,11 @@ exports.handler = (event, context, callback) => {
 
     const note = requestBody.Note;
 
+    // By default private status for each note
+    if (!note.hasOwnProperty("isPublic")) {
+        note.isPublic = false;
+    }
+
     note.NoteTimeStamp = new Date().toISOString();
     createNote(noteId, username, note).then(() => {
         // You can use the callback function to provide a return value from your Node.js
@@ -41,7 +46,8 @@ exports.handler = (event, context, callback) => {
                 Title: note.Title,
                 Content: note.Content,
                 Username: username,
-                NoteTimeStamp: note.NoteTimeStamp
+                NoteTimeStamp: note.NoteTimeStamp,
+                isPublic: note.isPublic
             }),
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -66,7 +72,8 @@ function createNote(noteId, username, note) {
             Title: note.Title,
             Content: note.Content,
             Username: username,
-            NoteTimeStamp: note.NoteTimeStamp
+            NoteTimeStamp: note.NoteTimeStamp,
+            isPublic: note.isPublic
         },
     }).promise();
 }

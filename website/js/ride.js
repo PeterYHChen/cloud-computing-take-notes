@@ -25,6 +25,13 @@ WildRydes.map = WildRydes.map || {};
         $('#noteTitle').val(selectedNote.Title);
         $('#noteEditor').data('markdown').setContent(selectedNote.Content);
         $("#noteContentHtml").html($('#noteEditor').data('markdown').parseContent());
+        if (selectedNote.isPublic) {
+            $('#notePrivateStatus').attr('class', 'btn btn-success');
+            $('#notePrivateStatus').text("Public");
+        } else {
+            $('#notePrivateStatus').attr('class', 'btn btn-danger');
+            $('#notePrivateStatus').text("Private");
+        }
     }
 
     function getNotes() {
@@ -62,7 +69,8 @@ WildRydes.map = WildRydes.map || {};
             data: JSON.stringify({
                 Note: {
                     Title: selectedNote.Title,
-                    Content: selectedNote.Content
+                    Content: selectedNote.Content,
+                    isPublic: selectedNote.isPublic
                 }
             }),
             contentType: 'application/json',
@@ -95,7 +103,8 @@ WildRydes.map = WildRydes.map || {};
                 Note: {
                     NoteId: selectedNote.NoteId,
                     Title: selectedNote.Title,
-                    Content: selectedNote.Content
+                    Content: selectedNote.Content,
+                    isPublic: selectedNote.isPublic
                 }
             }),
             contentType: 'application/json',
@@ -274,6 +283,21 @@ WildRydes.map = WildRydes.map || {};
         $('#createNoteButton').click(function () {
             var note = {};
             $('#noteTitleList').prepend(createNoteElementInList(note));
+        });
+
+        // Switch status label
+        $('#notePrivateStatus').click(function () {
+            if (selectedNote) {
+                if (selectedNote.isPublic) {
+                    selectedNote.isPublic = false;
+                    $('#notePrivateStatus').attr('class', 'btn btn-danger');
+                    $('#notePrivateStatus').text("Private");
+                } else {
+                    selectedNote.isPublic = true;
+                    $('#notePrivateStatus').attr('class', 'btn btn-success');
+                    $('#notePrivateStatus').text("Public");
+                }
+            }
         });
         $('#request').click(handleRequestClick);
         $('#signOut').click(function () {

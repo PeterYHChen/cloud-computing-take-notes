@@ -78,27 +78,67 @@
         <div class="container">
             <h2 align="center">Notes-Taking App</h2>
             <hr/>
-            <div class='noteSection'>
-                <div class='col-xs-3'>
-                    <h4 align="center">Notes</h4>
-                    <br/>
-                    <button id="createNoteButton" type="button" class="btn btn-primary btn-sm btn-block">Create Note</button>
-                    <br/>
-                    <div id="noteTitleList" class='list-group'> </div>
-                </div>
-                <div class='col-xs-9'>
-                    <h4 align="center">Content</h4>
-                    <br/>
-                    <form>
-                        <div id="noteContent" style="display:none;">
-                            <div class="input-group">
-                                <span class="input-group-addon">Title</span>
-                                <input id="noteTitle" name="title" type="text" class="form-control" />
-                            </div>
-                            <textarea id="noteEditor"></textarea>
+
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="#myNotes">My Notes</a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#publicNotes">Public Notes</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="myNotes" class="tab-pane fade in active">
+                    <div class='noteSection'>
+                        <div class='col-xs-3'>
+                            <h4 align="center">Notes</h4>
+                            <br/>
+                            <button id="createNoteButton" type="button" class="btn btn-primary btn-sm btn-block">Create Note</button>
+                            <br/>
+                            <div id="noteTitleList" class='list-group'> </div>
                         </div>
-                        <div id="noteContentHtml" class="well" style="display:none;"></div>
-                    </form>
+                        <div class='col-xs-9'>
+                            <h4 align="center">Content</h4>
+                            <br/>
+                            <form>
+                                <div id="noteContent" style="display:none;">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">Title</span>
+                                        <input id="noteTitle" name="title" type="text" class="form-control" />
+                                        <span class="input-group-btn">
+                                            <button id="notePrivateStatus" class="btn btn-danger" type="button">Go!</button>
+                                        </span>
+                                    </div>
+                                    <textarea id="noteEditor"></textarea>
+                                </div>
+                                <div id="noteContentHtml" class="well" style="display:none;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="publicNotes" class="tab-pane fade">
+                    <div class='noteSection'>
+                        <div class='col-xs-3'>
+                            <h4 align="center">Notes</h4>
+                            <br/>
+                            <div id="publicNoteTitleList" class='list-group'> </div>
+                        </div>
+                        <div class='col-xs-9'>
+                            <h4 align="center">Content</h4>
+                            <br/>
+                            <form>
+                                <div id="publicNoteContent" style="display:none;">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">Title</span>
+                                        <input id="publicNoteTitle" name="title" type="text" class="form-control" />
+                                    </div>
+                                    <textarea id="publicNoteEditor"></textarea>
+                                </div>
+                                <div id="publicNoteContentHtml" class="well" style="display:none;"></div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

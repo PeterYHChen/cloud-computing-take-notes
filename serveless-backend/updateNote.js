@@ -22,6 +22,10 @@ exports.handler = (event, context, callback) => {
     const requestBody = JSON.parse(event.body);
 
     const note = requestBody.Note;
+    // By default private status for each note
+    if (!note.hasOwnProperty("isPublic")) {
+        note.isPublic = false;
+    }
     updateNote(username, note).then((note) => {
         // You can use the callback function to provide a return value from your Node.js
         // Lambda functions. The first parameter is used for failed invocations. The
@@ -54,10 +58,11 @@ function updateNote(username, note) {
             "Username": username,
             "NoteId": note.NoteId
         },
-        UpdateExpression: "set Content = :content, Title=:title",
+        UpdateExpression: "set Content = :content, Title=:title, isPublic=:ispublic",
         ExpressionAttributeValues: {
             ":title": note.Title,
-            ":content": note.Content
+            ":content": note.Content,
+            ":ispublic": note.isPublic
         },
         ReturnValues: "ALL_NEW"
     }).promise();
