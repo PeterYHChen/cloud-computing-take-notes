@@ -6,8 +6,10 @@ WildRydes.map = WildRydes.map || {};
 (function rideScopeWrapper($) {
     var authToken;
     WildRydes.authToken.then(function setAuthToken(token) {
+        // console.log("token", token);
         if (token) {
             authToken = token;
+            getNotes();
         } else {
             window.location.href = '/signin.html';
         }
@@ -16,6 +18,7 @@ WildRydes.map = WildRydes.map || {};
         window.location.href = '/signin.html';
     });
 
+    // console.log("After token");
     var selectedNote;
     function updateSelectedNoteToUI(selectedNote) {
         selectedNote.a.innerHTML = selectedNote.Title;
@@ -272,7 +275,6 @@ WildRydes.map = WildRydes.map || {};
             var note = {};
             $('#noteTitleList').prepend(createNoteElementInList(note));
         });
-        getNotes();
         $('#request').click(handleRequestClick);
         $('#signOut').click(function () {
             WildRydes.signOut();
